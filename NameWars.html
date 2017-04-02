@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>姓名大作战</title>
+    <style>
+        .content {
+            width: 1000px;
+        }
+        .center-block {
+            display: block;
+            margin: 0 auto;
+        }
+        .myname {
+            color: skyblue;
+        }
+        .duishou {
+            color: red;
+        }
+        #process {
+            margin-top: 20px;
+        }
+        #process div {
+            margin: 10px;
+        }
+        input {
+            font-size: 32px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content center-block">
+        <h1>姓名大作战</h1>
+        <h3>请决斗人签生死状</h3>
+        决斗人： <input type="text" placeholder="你的姓名" id='myname' value=''>
+        <input type="text" placeholder="输入你的对手" id='duishou' value=''>
+        <input type="button" id='start' value='开始决斗'>
+        <div id="process">
+        </div>
+    </div>
+    <script>
+        function xuanshou(name, hp, rp) {
+            this.name = name;
+            this.hp = hp;
+            this.rp = rp;
+        }
+        var start = document.getElementById("start");
+        var mytxt = document.getElementById('myname');
+        var duishoutxt = document.getElementById('duishou');
+        var my;
+        var ds;
+        var juedou;
+        var process = document.getElementById('process');
+        function resetRP() {
+            my.rp = Math.random();
+            ds.rp = Math.random();
+        }
+        start.onclick = function () {
+            my = new xuanshou(mytxt.value, Math.floor(Math.random() * 400 + 100), Math.random());
+            ds = new xuanshou(duishoutxt.value, Math.floor(Math.random() * 400 + 100), Math.random());
+            juedou =  setInterval(function () {
+                solo(my, ds);
+                resetRP();
+            }, 1000);
+        }
+        function solo(obj1, obj2) {
+            if (obj1.hp <= 0 || obj2.hp <= 0) {
+                panding(obj1.hp <= 0 ? obj1 : obj2);
+                clearInterval(juedou);
+                return;
+            }
+            if (obj1.rp > obj2.rp) {
+                var shanghai = gank(obj2);
+                innerHTML(obj1, obj2, shanghai);
+            } else {
+                var shanghai = gank(obj1);
+                innerHTML(obj2, obj1, shanghai);
+            }
+        }
+        function gank(obj) {
+            var shanghai = Math.floor(Math.random() * 100 + 10);
+            obj.hp = obj.hp - shanghai;
+            return shanghai;
+        }
+        function innerHTML(obj1, obj2, dianshu) {
+            var str = "<div><span class='myname'>" + obj1.name + "</span>攻击了<span class='duishou'>" + obj2.name + "，" +
+                obj2.name + "</span>受到了" + dianshu + "点伤害。</div>";
+            process.innerHTML += str;
+        }
+
+        function panding(obj) {
+            if (obj.hp <= 0) {
+                var str = "<div><span class='duishou'>" + obj.name + "</span>跪了！！！！,并且大喊了一句 爹</div>";
+                process.innerHTML += str;
+            }
+        }
+    </script>
+</body>
+</html>
